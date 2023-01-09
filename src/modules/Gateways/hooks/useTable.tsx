@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
-import React, { useCallback } from 'react';
-import { PencilSquareIcon } from '@heroicons/react/24/solid';
-
-import { GATEWAY_MODAL } from '../constants';
+import React from 'react';
 
 import { Gateway } from '@/services';
-import { useGateways } from '@/modules/GatewaysTable/hooks';
+import { useGateways } from '@/modules/Gateways/hooks';
+import { GATEWAY_MODAL } from '@/modules/Gateways/constants';
 import { useModal } from '@/contexts';
 import { ColumnsProps } from '@/components/Table';
 

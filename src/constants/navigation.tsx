@@ -1,4 +1,4 @@
-import { GatewaysTable } from '@/modules';
+import { GatewayDetails, GatewaysTable } from '@/modules';
 import { Layout } from '@/components';
 
 export const routes = [
@@ -12,7 +12,7 @@ export const routes = [
       },
       {
         path: '/gateway/:id',
-        element: <div />,
+        element: <GatewayDetails />,
       },
     ],
   },

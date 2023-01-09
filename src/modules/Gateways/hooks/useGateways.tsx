@@ -1,8 +1,9 @@
+import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Gateway, GatewaysService } from '@/services';
-import { CACHE_KEY_GATEWAY_LIST, CACHE_KEY_GATEWAY } from '@/modules/GatewaysTable/constants';
+import { CACHE_KEY_GATEWAY_LIST, CACHE_KEY_GATEWAY } from '@/modules/Gateways/constants';
 
 export const useGetGateways = () => {
   const { isLoading, data } = useQuery(CACHE_KEY_GATEWAY_LIST, GatewaysService.getAll);
@@ -10,11 +11,19 @@ export const useGetGateways = () => {
   return { isLoading, data };
 };
 
-export const useGetOneGateway = (id: string) => {
-  const { isLoading, data } = useQuery(CACHE_KEY_GATEWAY, async () => {
-    const { data: result } = await GatewaysService.getOne(id);
-    return result;
-  });
+export const useGetOneGateway = () => {
+  const { id } = useParams();
+
+  const queryConfig = useMemo(() => ({ enabled: !!id }), [id]);
+
+  const { isLoading, data } = useQuery(
+    CACHE_KEY_GATEWAY,
+    async () => {
+      const { data: result } = await GatewaysService.getOne(id || '');
+      return result;
+    },
+    queryConfig,
+  );
 
   return { isLoading, data };
 };

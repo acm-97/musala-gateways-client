@@ -3,19 +3,20 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 const ModalContext = createContext<any>({});
 
 type dialogProps = {
+  isOpen: boolean;
   dialogId?: string | null;
   payload?: any;
 };
 
 function ModalProvider(props: any) {
-  const [dialog, setDialog] = useState<dialogProps>({});
+  const [dialog, setDialog] = useState<dialogProps>({ isOpen: false });
 
   const openDialog = useCallback((dialogId: string, payload: any) => {
-    setDialog({ dialogId, payload });
+    setDialog({ isOpen: true, dialogId, payload });
   }, []);
 
   const closeDialog = useCallback(() => {
-    setDialog({ dialogId: null });
+    setDialog({ isOpen: false, dialogId: null });
   }, []);
 
   const values = useMemo(() => ({ ...dialog, openDialog, closeDialog }), [closeDialog, dialog, openDialog]);
@@ -40,8 +41,9 @@ function useModal(dialog: string) {
   }, [context, dialog]);
 
   const isOpen = context.isOpen && context.dialog === dialog;
+
   try {
-    return { openDialog, closeDialog, setOpen, isOpen, payload: isOpen ? context.payload : null };
+    return { openDialog, closeDialog, setOpen, isOpen, payload: context.payload };
   } catch (e) {
     return {
       // eslint-disable-next-line @typescript-eslint/no-empty-function

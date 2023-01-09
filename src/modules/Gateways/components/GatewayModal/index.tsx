@@ -2,8 +2,8 @@
 import { memo, useCallback, useRef, useMemo } from 'react';
 import { Formik } from 'formik';
 
-import { useGateways } from '../hooks';
-import { GATEWAY_MODAL } from '../constants';
+import { useGateways } from '../../hooks';
+import { GATEWAY_MODAL } from '../../constants';
 
 import { Gateway } from '@/services';
 import { useModal } from '@/contexts';
@@ -13,14 +13,14 @@ import { useModal } from '@/contexts';
 const GatewayModal = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isLoading, add } = useGateways.useAddGateway();
-  const { payload: gateway } = useModal(GATEWAY_MODAL);
+  const { payload } = useModal(GATEWAY_MODAL);
 
   const initialValues = useMemo(
     () => ({
-      name: gateway?.name || '',
-      ipv4_address: gateway?.ipv4_address || '',
+      name: payload?.name || '',
+      ipv4_address: payload?.ipv4_address || '',
     }),
-    [gateway],
+    [payload],
   );
 
   const onSubmit = useCallback(
@@ -44,6 +44,7 @@ const GatewayModal = () => {
     <>
       <div
         id={GATEWAY_MODAL}
+        data-modal-target={GATEWAY_MODAL}
         tabIndex={-1}
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 z-50 hidden h-modal w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full"
@@ -75,7 +76,7 @@ const GatewayModal = () => {
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <Formik initialValues={initialValues} onSubmit={onSubmit}>
+            <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit}>
               {({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-6 p-6">

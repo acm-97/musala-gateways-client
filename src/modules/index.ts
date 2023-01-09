@@ -1,1 +1,1 @@
-export { default as GatewaysTable } from './GatewaysTable';
+export { GatewaysTable, GatewayDetails } from './Gateways/containers';
