@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import React, { memo } from 'react';
 
-import { GatewayModal } from '@/modules/Gateways/components';
+import { GatewayModal, PeripheralModal } from '@/modules/Gateways/components';
 import { ModalProvider, ReactQueryProvider } from '@/contexts';
 
 const Layout = () => (
@@ -14,6 +14,7 @@ const Layout = () => (
       </main>
 
       <GatewayModal />
+      <PeripheralModal />
     </ModalProvider>
   </ReactQueryProvider>
 );

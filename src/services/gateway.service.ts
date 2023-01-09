@@ -1,6 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
 
+import { Peripheral } from './peripheral.service';
+
 import { API_URL } from '@/constants';
 
 const config = { headers: { 'Content-Type': 'application/json' } };
@@ -9,7 +11,7 @@ export type Gateway = {
   _id: string;
   name: string;
   ipv4_address: string;
-  peripherals: any[];
+  peripherals_devices: Peripheral[];
 };
 
 class GatewaysService {

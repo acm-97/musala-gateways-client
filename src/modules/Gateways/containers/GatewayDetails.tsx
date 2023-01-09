@@ -1,33 +1,39 @@
 import { memo, useCallback } from 'react';
-import { PencilSquareIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/solid';
 
-import { useGateways } from '@/modules/Gateways/hooks';
+import { useGateways, useTablePeripherals } from '@/modules/Gateways/hooks';
 import { GATEWAY_MODAL, PERIPHERAL_MODAL } from '@/modules/Gateways/constants';
 import { useModal } from '@/contexts';
+import { Table } from '@/components';
 
 // type GatewayDetailsProps = {};
 
 const GatewayDetails = () => {
   const { data } = useGateways.useGetOneGateway();
-  const { openDialog, setOpen } = useModal(GATEWAY_MODAL);
+  const { openDialog } = useModal(GATEWAY_MODAL);
+  const { openDialog: openPeripherals } = useModal(PERIPHERAL_MODAL);
+  const { rows, columns } = useTablePeripherals();
 
   const handleGatewayModal = useCallback(() => {
-    setOpen && setOpen(true);
     openDialog(data);
-  }, [data, openDialog, setOpen]);
+  }, [data, openDialog]);
+
+  const handlePeripheralsModal = useCallback(() => {
+    openPeripherals(data);
+  }, [data, openPeripherals]);
 
   return (
     <>
       <p className="mb-3">
-        <span className="opacity-70">Name: </span>
+        <span className="opacity-70">Name : </span>
         {data?.name}
       </p>
       <p className="mb-3">
-        <span className="opacity-70">IPv4 address: </span>
+        <span className="opacity-70">IPv4 address : </span>
         {data?.ipv4_address}
       </p>
       <p className="mb-3">
-        <span className="opacity-70">ID: </span>
+        <span className="opacity-70">Serial Number : </span>
         {data?._id}
       </p>
 
@@ -35,21 +41,23 @@ const GatewayDetails = () => {
         type="button"
         data-modal-target={GATEWAY_MODAL}
         data-modal-toggle={GATEWAY_MODAL}
-        className="btn mb-5"
+        className="btn mb-6 mr-3"
         onClick={handleGatewayModal}
       >
-        <PencilSquareIcon width={20} className="mr-2" /> Gateway
+        <PencilSquareIcon width={16} className="mr-2" /> Gateway
       </button>
 
       <button
         type="button"
         data-modal-target={PERIPHERAL_MODAL}
         data-modal-toggle={PERIPHERAL_MODAL}
-        className="btn mb-5"
-        onClick={}
+        className="btn mb-6"
+        onClick={handlePeripheralsModal}
       >
-        <PencilSquareIcon width={20} className="mr-2" /> Gateway
+        <PlusIcon width={16} className="mr-2" /> Peripheral
       </button>
+
+      <Table rows={rows} columns={columns} />
     </>
   );
 };
