@@ -1,11 +1,15 @@
 import { Outlet } from 'react-router-dom';
 import React, { memo } from 'react';
 
-import { ReactQueryProvider } from '@/contexts';
+import { AddGatewayModal } from '@/modules/GatewaysTable/containers';
+import { ModalProvider, ReactQueryProvider } from '@/contexts';
 
 const Layout = () => (
   <ReactQueryProvider>
-    <Outlet />
+    <ModalProvider>
+      <Outlet />
+      <AddGatewayModal />
+    </ModalProvider>
   </ReactQueryProvider>
 );
 

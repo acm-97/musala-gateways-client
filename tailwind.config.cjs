@@ -2,7 +2,7 @@
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/flowbite/**/*.js'],
   theme: {
     extend: {},
     colors: {
@@ -12,6 +12,7 @@ module.exports = {
     },
   },
   plugins: [
+    require('flowbite/plugin'),
     require('daisyui'),
     plugin(function ({ addBase, theme, addVariant }) {
       // addBase({

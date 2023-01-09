@@ -7,8 +7,32 @@
     font-size: clamp(theme('fontSize.3xl'), 5vw, theme('fontSize.5xl'));
   }
 
-  tr:hover td {
+  /* tr:hover td {
     background-color: theme('colors.bg-gray-light');
     cursor: pointer;
+  } */
+
+  a {
+    position: relative;
+    color: theme('colors.teal.300');
+  }
+
+  a:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 0.01rem;
+    bottom: 0;
+    left: 0;
+    background: theme('colors.teal.300');
+    visibility: hidden;
+    border-radius: 1rem;
+    transform: scaleX(0);
+    transition: 0.25s linear;
+  }
+
+  a:hover:before {
+    visibility: visible !important;
+    transform: scaleX(1) !important;
   }
 }

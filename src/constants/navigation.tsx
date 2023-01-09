@@ -10,10 +10,10 @@ export const routes = [
         path: '',
         element: <GatewaysTable />,
       },
-      // {
-      //   path: '/gateway/:id/peripherals',
-      //   element: <Archive />,
-      // },
+      {
+        path: '/gateway/:id',
+        element: <div />,
+      },
     ],
   },
 ];
