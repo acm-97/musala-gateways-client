@@ -1,19 +1,23 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { memo, useCallback, useMemo } from 'react';
-import { Formik } from 'formik';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { ErrorMessage, Formik } from 'formik';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import { useGateways } from '../../hooks';
 import { GATEWAY_MODAL } from '../../constants';
 
 import { useModal } from '@/contexts';
-import { Button } from '@/components';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Alert, Button } from '@/components';
 
 // type AddGatewayModalProps = { gateway: Gateway | null };
 
 const GatewayModal = () => {
-  const { isLoading, add } = useGateways.useAddGateway();
+  const { isLoading: isAdding, add } = useGateways.useAddGateway();
+  const { isLoading: isUpdating, update } = useGateways.useUpdateGateway();
   const { payload, closeModal, setOpen } = useModal(GATEWAY_MODAL);
+  const [error, setError] = useState('');
+
+  const isLoading = useMemo(() => isAdding || isUpdating, [isAdding, isUpdating]);
 
   const initialValues = useMemo(
     () => ({
@@ -24,23 +28,37 @@ const GatewayModal = () => {
   );
 
   const onSubmit = useCallback(
-    async (values: any, { resetForm }: any) => {
-      await add(values);
-      if (!isLoading) {
-        resetForm();
-        closeModal();
-        setOpen && setOpen(false);
+    async (values: any, { resetForm, setErrors }: any) => {
+      try {
+        setError('');
+        !payload ? await add(values) : await update({ _id: payload._id, ...values });
+        if (!isLoading) {
+          resetForm();
+          closeModal();
+          setOpen && setOpen(false);
+        }
+      } catch (err: any) {
+        if (err?.response?.data && typeof err.response.data === 'string') {
+          setError(err.response.data);
+        }
+
+        setErrors(err.response.data.errors);
       }
     },
-    [add, closeModal, isLoading, setOpen],
+    [add, closeModal, isLoading, payload, setOpen, update],
   );
 
-  const handleCancel = useCallback(() => {
-    if (!isLoading) {
-      closeModal();
-      setOpen && setOpen(false);
-    }
-  }, [closeModal, isLoading, setOpen]);
+  const handleCancel = useCallback(
+    (resetForm: any) => {
+      if (!isLoading) {
+        setError('');
+        closeModal();
+        setOpen && setOpen(false);
+        resetForm();
+      }
+    },
+    [closeModal, isLoading, setOpen],
+  );
 
   return (
     <div
@@ -65,8 +83,9 @@ const GatewayModal = () => {
             </button>
           </div>
           <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit}>
-            {({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+            {({ values, handleChange, handleBlur, handleSubmit, isSubmitting, resetForm }) => (
               <form onSubmit={handleSubmit}>
+                {error && <Alert> {error} </Alert>}
                 <div className="mt-5 space-y-6 p-6">
                   <div className="grid md:grid-cols-2 md:gap-6 ">
                     <div className="group relative z-0 mb-6 w-full">
@@ -74,9 +93,8 @@ const GatewayModal = () => {
                         type="text"
                         name="name"
                         id="name"
-                        className="peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5 px-0  text-sm text-white  focus:border-teal-300 focus:outline-none focus:ring-0"
+                        className="peer mb-3 block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5  px-0 text-sm  text-white focus:border-teal-300 focus:outline-none focus:ring-0"
                         placeholder=" "
-                        required
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.name}
@@ -87,15 +105,18 @@ const GatewayModal = () => {
                       >
                         Name
                       </label>
+                      <ErrorMessage
+                        name="name"
+                        render={({ message }: any) => <span className="text-sm text-red-500">{message}</span>}
+                      />
                     </div>
                     <div className="group relative z-0 mb-6 w-full">
                       <input
                         type="text"
                         name="ipv4_address"
                         id="ipv4_address"
-                        className="peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5 px-0  text-sm text-white  focus:border-teal-400 focus:outline-none focus:ring-0"
+                        className="peer mb-3 block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5  px-0 text-sm  text-white focus:border-teal-400 focus:outline-none focus:ring-0"
                         placeholder=" "
-                        required
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.ipv4_address}
@@ -106,6 +127,10 @@ const GatewayModal = () => {
                       >
                         IPv4 Address
                       </label>
+                      <ErrorMessage
+                        name="ipv4_address"
+                        render={({ message }: any) => <span className="text-sm text-red-500">{message}</span>}
+                      />
                     </div>
                   </div>
                 </div>
@@ -117,7 +142,7 @@ const GatewayModal = () => {
                   >
                     Save
                   </Button>
-                  <Button type="button" onClick={handleCancel}>
+                  <Button type="button" onClick={() => handleCancel(resetForm)}>
                     Cancel
                   </Button>
                 </div>

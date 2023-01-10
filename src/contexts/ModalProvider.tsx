@@ -39,20 +39,6 @@ function useModal(modalId: string) {
     throw new Error('useModalContext must be used within a ModalContextProvider');
   }
 
-  // const [modal, setModal] = useState<any>();
-  // useEffect(() => {
-  //   const $targetEl: HTMLElement | null = document.querySelector(`#${Modal}`);
-
-  //   // options with default values
-  //   const options = {};
-  //   setModal(new Modal($targetEl, options));
-  // }, [Modal]);
-
-  // useEffect(() => {
-  //   const $targetEl: HTMLElement | null = document.querySelector(`#${modalId}`);
-  //   context.setModalInstance(new Modal($targetEl, {}));
-  // }, [modalId]);
-
   const { openModal, closeModal, setOpen } = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const openModal = (payload: any) => context.openModal(modalId, payload);
