@@ -112,7 +112,7 @@ const GatewayModal = () => {
                 <div className="flex items-center justify-end space-x-2 p-6">
                   <Button
                     type="submit"
-                    className=" bg-teal-600 hover:bg-teal-800 focus:ring-teal-800"
+                    className=" bg-teal-600 hover:bg-teal-700 focus:ring-teal-700"
                     disabled={isLoading || isSubmitting}
                   >
                     Save

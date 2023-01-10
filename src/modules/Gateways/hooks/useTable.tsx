@@ -55,12 +55,7 @@ const useTable = () => {
     },
     {
       headerName: 'Serial Number',
-      accessor: ({ _id }: Gateway) => (
-        <Link reloadDocument to={`/gateway/${_id}`}>
-          {' '}
-          {_id}{' '}
-        </Link>
-      ),
+      accessor: ({ _id }: Gateway) => <Link to={`/gateway/${_id}`}> {_id} </Link>,
     },
     { headerName: 'IPv4 Address', accessor: 'ipv4_address' },
   ];

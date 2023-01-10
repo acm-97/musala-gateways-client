@@ -1,47 +1,51 @@
 import { memo, useCallback } from 'react';
 import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftCircleIcon } from '@heroicons/react/24/outline';
 
 import { useGateways, useTablePeripherals } from '@/modules/Gateways/hooks';
 import { GATEWAY_MODAL, PERIPHERAL_MODAL } from '@/modules/Gateways/constants';
 import { useModal } from '@/contexts';
 import { Button, Table } from '@/components';
+import { Link } from 'react-router-dom';
 
 // type GatewayDetailsProps = {};
 
 const GatewayDetails = () => {
   const { data } = useGateways.useGetOneGateway();
-  const { openModal } = useModal(GATEWAY_MODAL);
-  const { openModal: openPeripherals } = useModal(PERIPHERAL_MODAL);
+  const { openModal, setOpen } = useModal(GATEWAY_MODAL);
+  const { openModal: openPeripheral, setOpen: setOpenPeripheral } = useModal(PERIPHERAL_MODAL);
   const { rows, columns } = useTablePeripherals();
 
   const handleGatewayModal = useCallback(() => {
+    setOpen?.(true);
     openModal(data);
-  }, [data, openModal]);
+  }, [data, openModal, setOpen]);
 
   const handlePeripheralsModal = useCallback(() => {
-    openPeripherals(data);
-  }, [data, openPeripherals]);
+    setOpenPeripheral?.(true);
+    openPeripheral(data);
+  }, [data, openPeripheral, setOpenPeripheral]);
 
   return (
     <>
-      <p className="mb-3">
-        <span className="opacity-70">Name : </span>
-        {data?.name}
+      <Link to="/" className="before:hidden">
+        <ArrowLeftCircleIcon width={40} />
+      </Link>
+      <p className="mb-3 mt-8 text-gray-400">
+        Name : <span className="font-bold text-white">{data?.name}</span>
       </p>
-      <p className="mb-3">
-        <span className="opacity-70">IPv4 address : </span>
-        {data?.ipv4_address}
+      <p className="mb-3 text-gray-400">
+        IPv4 address : <span className="font-bold text-white">{data?.ipv4_address}</span>
       </p>
-      <p className="mb-3">
-        <span className="opacity-70">Serial Number : </span>
-        {data?._id}
+      <p className="mb-3 text-gray-400">
+        Serial Number : <span className="font-bold text-white">{data?._id}</span>
       </p>
 
-      <Button className="btn mb-6 mr-3" onClick={handleGatewayModal}>
+      <Button className="mb-6 mr-3" onClick={handleGatewayModal}>
         <PencilSquareIcon width={16} className="mr-2" /> Gateway
       </Button>
 
-      <Button className="btn mb-6" onClick={handlePeripheralsModal}>
+      <Button className="mb-6" onClick={handlePeripheralsModal}>
         <PlusIcon width={16} className="mr-2" /> Peripheral
       </Button>
 

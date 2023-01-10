@@ -7,13 +7,14 @@ import { usePeripherals } from '../../hooks';
 import { PERIPHERAL_MODAL } from '../../constants';
 
 import { useModal } from '@/contexts';
+import { Button } from '@/components';
 
 // type AddPeripheralModalProps = { peripheral: Peripheral | null };
 
 const PeripheralModal = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isLoading, add } = usePeripherals.useAddPeripheral();
-  const { payload, closeModal } = useModal(PERIPHERAL_MODAL);
+  const { payload, closeModal, setOpen } = useModal(PERIPHERAL_MODAL);
 
   const initialValues = useMemo(
     () => ({
@@ -28,18 +29,20 @@ const PeripheralModal = () => {
     async (values: any, { resetForm }: any) => {
       await add({ gateway: payload?._id, ...values });
       if (!isLoading) {
-        closeModal();
         resetForm();
+        closeModal();
+        setOpen?.(false);
       }
     },
-    [add, closeModal, isLoading, payload?._id],
+    [add, closeModal, isLoading, payload?._id, setOpen],
   );
 
   const handleCancel = useCallback(() => {
     if (!isLoading) {
       closeModal();
+      setOpen?.(false);
     }
-  }, [closeModal, isLoading]);
+  }, [closeModal, isLoading, setOpen]);
 
   return (
     <>
@@ -59,7 +62,7 @@ const PeripheralModal = () => {
               <button
                 type="button"
                 className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-600 hover:text-white"
-                data-modal-hide={PERIPHERAL_MODAL}
+                onClick={handleCancel}
               >
                 <XMarkIcon className="h-5 w-5" />
                 <span className="sr-only">Close modal</span>
@@ -119,23 +122,20 @@ const PeripheralModal = () => {
                           className="peer sr-only"
                         />
 
-                        <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-teal-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-2 peer-focus:ring-teal-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-teal-800" />
+                        <div className="peer h-6 w-11 rounded-full border-gray-600 bg-gray-400 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-teal-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-teal-700" />
                         <span className="ml-3 text-sm font-medium text-gray-300">Offline / Online</span>
                       </label>
                     </div>
                   </div>
                   <div className="flex items-center justify-end space-x-2 p-6">
-                    <button
+                    <Button
                       type="submit"
-                      className="btn"
-                      data-modal-hide={PERIPHERAL_MODAL}
+                      className=" bg-teal-600 hover:bg-teal-700 focus:ring-teal-700"
                       disabled={isLoading || isSubmitting}
                     >
                       Save
-                    </button>
-                    <button type="button" data-modal-hide={PERIPHERAL_MODAL} onClick={handleCancel}>
-                      Cancel
-                    </button>
+                    </Button>
+                    <Button onClick={handleCancel}>Cancel</Button>
                   </div>
                 </form>
               )}
