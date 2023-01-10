@@ -54,4 +54,8 @@
   ::-webkit-scrollbar-track {
     background-color: var(--primary-bg);
   }
+
+  th {
+    position: relative !important;
+  }
 }
