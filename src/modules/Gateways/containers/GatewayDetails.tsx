@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { memo, useCallback } from 'react';
 import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { ArrowLeftCircleIcon } from '@heroicons/react/24/outline';
@@ -6,7 +7,6 @@ import { useGateways, useTablePeripherals } from '@/modules/Gateways/hooks';
 import { GATEWAY_MODAL, PERIPHERAL_MODAL } from '@/modules/Gateways/constants';
 import { useModal } from '@/contexts';
 import { Button, Table } from '@/components';
-import { Link } from 'react-router-dom';
 
 // type GatewayDetailsProps = {};
 
@@ -23,7 +23,7 @@ const GatewayDetails = () => {
 
   const handlePeripheralsModal = useCallback(() => {
     setOpenPeripheral?.(true);
-    openPeripheral(data);
+    openPeripheral({ gateway: data._id });
   }, [data, openPeripheral, setOpenPeripheral]);
 
   return (

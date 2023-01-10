@@ -1,20 +1,24 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { memo, useCallback, useRef, useMemo } from 'react';
-import { Formik } from 'formik';
+import React, { memo, useCallback, useRef, useMemo, useState } from 'react';
+import { Formik, ErrorMessage } from 'formik';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import { usePeripherals } from '../../hooks';
 import { PERIPHERAL_MODAL } from '../../constants';
 
 import { useModal } from '@/contexts';
-import { Button } from '@/components';
+import { Alert, Button } from '@/components';
 
 // type AddPeripheralModalProps = { peripheral: Peripheral | null };
 
 const PeripheralModal = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isLoading, add } = usePeripherals.useAddPeripheral();
+  const { isLoading: isAdding, add } = usePeripherals.useAddPeripheral();
+  const { isLoading: isUpdating, update } = usePeripherals.useUpdatePeripheral();
   const { payload, closeModal, setOpen } = useModal(PERIPHERAL_MODAL);
+  const [error, setError] = useState('');
+
+  const isLoading = useMemo(() => isAdding || isUpdating, [isAdding, isUpdating]);
 
   const initialValues = useMemo(
     () => ({
@@ -26,23 +30,38 @@ const PeripheralModal = () => {
   );
 
   const onSubmit = useCallback(
-    async (values: any, { resetForm }: any) => {
-      await add({ gateway: payload?._id, ...values });
-      if (!isLoading) {
-        resetForm();
-        closeModal();
-        setOpen?.(false);
+    async (values: any, { resetForm, setErrors }: any) => {
+      try {
+        setError('');
+        Object.keys(payload).length === 1
+          ? await add({ gateway: payload?.gateway, ...values })
+          : await update({ _id: payload._id, ...values });
+        if (!isLoading) {
+          resetForm();
+          closeModal();
+          setOpen && setOpen(false);
+        }
+      } catch (err: any) {
+        if (err?.response?.data && typeof err.response.data === 'string') {
+          setError(err.response.data);
+        }
+
+        setErrors(err.response.data.errors);
       }
     },
-    [add, closeModal, isLoading, payload?._id, setOpen],
+    [add, closeModal, isLoading, payload, setOpen, update],
   );
 
-  const handleCancel = useCallback(() => {
-    if (!isLoading) {
-      closeModal();
-      setOpen?.(false);
-    }
-  }, [closeModal, isLoading, setOpen]);
+  const handleCancel = useCallback(
+    (resetForm: any) => {
+      if (!isLoading) {
+        closeModal();
+        setOpen?.(false);
+        resetForm();
+      }
+    },
+    [closeModal, isLoading, setOpen],
+  );
 
   return (
     <>
@@ -69,18 +88,18 @@ const PeripheralModal = () => {
               </button>
             </div>
             <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit}>
-              {({ values, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => (
+              {({ values, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue, resetForm }) => (
                 <form onSubmit={handleSubmit}>
+                  {error && <Alert> {error} </Alert>}
                   <div className="mt-5 space-y-6 p-6 ">
                     <div className="grid md:grid-cols-2 md:gap-6 ">
                       <div className="group relative z-0 mb-6 w-full">
                         <input
                           type="text"
-                          name="name"
-                          id="name"
-                          className="peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5 px-0  text-sm text-white  focus:border-teal-400 focus:outline-none focus:ring-0"
+                          name="uid"
+                          id="uid"
+                          className="peer mb-3 block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5  px-0 text-sm  text-white focus:border-teal-400 focus:outline-none focus:ring-0"
                           placeholder=" "
-                          required
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.uid}
@@ -91,15 +110,18 @@ const PeripheralModal = () => {
                         >
                           UID
                         </label>
+                        <ErrorMessage
+                          name="uid"
+                          render={({ message }: any) => <span className="text-sm text-red-500">{message}</span>}
+                        />
                       </div>
                       <div className="group relative z-0 mb-6 w-full">
                         <input
                           type="text"
                           name="vendor"
                           id="vendor"
-                          className="peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5 px-0  text-sm text-white  focus:border-teal-400 focus:outline-none focus:ring-0"
+                          className="peer mb-3 block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent py-2.5  px-0 text-sm  text-white focus:border-teal-400 focus:outline-none focus:ring-0"
                           placeholder=" "
-                          required
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.vendor}
@@ -110,6 +132,10 @@ const PeripheralModal = () => {
                         >
                           Vendor
                         </label>
+                        <ErrorMessage
+                          name="vendor"
+                          render={({ message }: any) => <span className="text-sm text-red-500">{message}</span>}
+                        />
                       </div>
                     </div>
                     <div className="group relative z-0 mb-6 w-full">
@@ -135,7 +161,7 @@ const PeripheralModal = () => {
                     >
                       Save
                     </Button>
-                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button onClick={() => handleCancel(resetForm)}>Cancel</Button>
                   </div>
                 </form>
               )}
