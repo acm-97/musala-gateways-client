@@ -11,7 +11,7 @@ export type Gateway = {
   _id: string;
   name: string;
   ipv4_address: string;
-  peripherals_devices: Peripheral[];
+  peripheralsDevices: Peripheral[];
 };
 
 class GatewaysService {

@@ -9,8 +9,7 @@ import { usePeripherals } from '@/modules/Gateways/hooks';
 import { useModal } from '@/contexts';
 import { ColumnsProps } from '@/components/Table';
 
-const useTable = () => {
-  const { data } = usePeripherals.useGetPeripherals();
+const useTablePeripherals = (peripheralsDevices: Peripheral[]) => {
   const { remove } = usePeripherals.useRemovePeripheral();
   const { openModal, setOpen } = useModal(PERIPHERAL_MODAL);
   const { openModal: openConfirm, setOpen: setOpenConfirm } = useModal(CONFIRM_MODAL);
@@ -33,7 +32,7 @@ const useTable = () => {
     });
   };
 
-  const rows: any[] = data?.data || [];
+  const rows: any[] = peripheralsDevices || [];
   const columns: ColumnsProps[] = [
     {
       headerName: '',
@@ -71,4 +70,4 @@ const useTable = () => {
   return { rows, columns };
 };
 
-export default useTable;
+export default useTablePeripherals;

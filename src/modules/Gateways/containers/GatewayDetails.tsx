@@ -14,7 +14,7 @@ const GatewayDetails = () => {
   const { data } = useGateways.useGetOneGateway();
   const { openModal, setOpen } = useModal(GATEWAY_MODAL);
   const { openModal: openPeripheral, setOpen: setOpenPeripheral } = useModal(PERIPHERAL_MODAL);
-  const { rows, columns } = useTablePeripherals();
+  const { rows, columns } = useTablePeripherals(data?.peripheralsDevices);
 
   const handleGatewayModal = useCallback(() => {
     setOpen?.(true);
