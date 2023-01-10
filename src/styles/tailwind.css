@@ -12,7 +12,8 @@
     cursor: pointer;
   } */
 
-  a {
+  a,
+  svg {
     position: relative;
     color: theme('colors.teal.300');
   }
@@ -34,5 +35,23 @@
   a:hover:before {
     visibility: visible !important;
     transform: scaleX(1) !important;
+  }
+
+  svg:hover {
+    color: theme('colors.teal.600');
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: theme('colors.gray.400');
+    border: 3px solid var(--primary-bg);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: var(--primary-bg);
   }
 }

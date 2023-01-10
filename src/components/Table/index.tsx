@@ -30,7 +30,7 @@ const Table = ({
   tableHeaderProps,
   scrollReveal = false,
 }: TableProps) => (
-  <div className={classnames('overflow-x-auto', containerClass)}>
+  <div className={classnames('overflow-x-auto shadow-md', containerClass)}>
     <table className={classnames('table w-full', tableClass)}>
       <thead>
         <tr>

@@ -4,11 +4,10 @@ const plugin = require('tailwindcss/plugin');
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/flowbite/**/*.js'],
   theme: {
-    extend: {},
-    colors: {
-      'bg-gray': '#2a303c',
-      'bg-gray-light': '#3f485a',
-      'bg-gray-dark': '#242933',
+    extend: {
+      colors: {
+        teal: { 300: '#5eead4', 400: '#2dd4bf', 600: '#0d9488', 800: '#115e59' },
+      },
     },
   },
   plugins: [

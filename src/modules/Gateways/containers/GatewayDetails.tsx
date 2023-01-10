@@ -4,19 +4,19 @@ import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { useGateways, useTablePeripherals } from '@/modules/Gateways/hooks';
 import { GATEWAY_MODAL, PERIPHERAL_MODAL } from '@/modules/Gateways/constants';
 import { useModal } from '@/contexts';
-import { Table } from '@/components';
+import { Button, Table } from '@/components';
 
 // type GatewayDetailsProps = {};
 
 const GatewayDetails = () => {
   const { data } = useGateways.useGetOneGateway();
-  const { openDialog } = useModal(GATEWAY_MODAL);
-  const { openDialog: openPeripherals } = useModal(PERIPHERAL_MODAL);
+  const { openModal } = useModal(GATEWAY_MODAL);
+  const { openModal: openPeripherals } = useModal(PERIPHERAL_MODAL);
   const { rows, columns } = useTablePeripherals();
 
   const handleGatewayModal = useCallback(() => {
-    openDialog(data);
-  }, [data, openDialog]);
+    openModal(data);
+  }, [data, openModal]);
 
   const handlePeripheralsModal = useCallback(() => {
     openPeripherals(data);
@@ -37,25 +37,13 @@ const GatewayDetails = () => {
         {data?._id}
       </p>
 
-      <button
-        type="button"
-        data-modal-target={GATEWAY_MODAL}
-        data-modal-toggle={GATEWAY_MODAL}
-        className="btn mb-6 mr-3"
-        onClick={handleGatewayModal}
-      >
+      <Button className="btn mb-6 mr-3" onClick={handleGatewayModal}>
         <PencilSquareIcon width={16} className="mr-2" /> Gateway
-      </button>
+      </Button>
 
-      <button
-        type="button"
-        data-modal-target={PERIPHERAL_MODAL}
-        data-modal-toggle={PERIPHERAL_MODAL}
-        className="btn mb-6"
-        onClick={handlePeripheralsModal}
-      >
+      <Button className="btn mb-6" onClick={handlePeripheralsModal}>
         <PlusIcon width={16} className="mr-2" /> Peripheral
-      </button>
+      </Button>
 
       <Table rows={rows} columns={columns} />
     </>

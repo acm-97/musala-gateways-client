@@ -3,6 +3,7 @@ export const CACHE_KEY_GATEWAY = 'gategway-one';
 
 export const GATEWAY_MODAL = 'GATEWAY_MODAL';
 export const PERIPHERAL_MODAL = 'PERIPHERAL_MODAL';
+export const CONFIRM_MODAL = 'CONFIRM_MODAL';
 
 export const CACHE_KEY_PERIPHERAL_LIST = 'peripheral-list';
 export const CACHE_KEY_PERIPHERAL = 'peripheral-one';

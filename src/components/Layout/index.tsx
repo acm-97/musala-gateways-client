@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 
 import { GatewayModal, PeripheralModal } from '@/modules/Gateways/components';
 import { ModalProvider, ReactQueryProvider } from '@/contexts';
+import { ConfirmModal } from '@/components';
 
 const Layout = () => (
   <ReactQueryProvider>
@@ -15,6 +16,7 @@ const Layout = () => (
 
       <GatewayModal />
       <PeripheralModal />
+      <ConfirmModal />
     </ModalProvider>
   </ReactQueryProvider>
 );

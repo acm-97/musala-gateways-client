@@ -1,55 +1,90 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Modal } from 'flowbite';
 
 const ModalContext = createContext<any>({});
 
-type dialogProps = {
+type ModalProps = {
   isOpen: boolean;
-  dialogId?: string | null;
+  modalId?: string | null;
   payload?: any;
 };
 
 function ModalProvider(props: any) {
-  const [dialog, setDialog] = useState<dialogProps>({ isOpen: false });
+  const [modal, setModal] = useState<ModalProps>({ isOpen: false });
+  const [modalInstance, setModalInstance] = useState<any>();
 
-  const openDialog = useCallback((dialogId: string, payload: any) => {
-    setDialog({ isOpen: true, dialogId, payload });
+  const openModal = useCallback((modalId: string, payload: any) => {
+    setModal({ isOpen: true, modalId, payload });
   }, []);
 
-  const closeDialog = useCallback(() => {
-    setDialog({ isOpen: false, dialogId: null });
+  const closeModal = useCallback(() => {
+    setModal({ isOpen: false, modalId: null });
   }, []);
 
-  const values = useMemo(() => ({ ...dialog, openDialog, closeDialog }), [closeDialog, dialog, openDialog]);
+  const saveModalInstance = useCallback((instance: HTMLElement | null) => {
+    setModalInstance(instance);
+  }, []);
+
+  const values = useMemo(
+    () => ({ ...modal, openModal, closeModal, modalInstance, saveModalInstance }),
+    [closeModal, saveModalInstance, modal, modalInstance, openModal],
+  );
 
   return <ModalContext.Provider value={values} {...props} />;
 }
 
-function useModal(dialog: string) {
+function useModal(modalId: string) {
   const context = useContext(ModalContext);
   if (context === undefined) {
-    throw new Error('useDialogContext must be used within a ModalContextProvider');
+    throw new Error('useModalContext must be used within a ModalContextProvider');
   }
 
-  const { openDialog, closeDialog, setOpen } = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const openDialog = (payload: any) => context.openDialog(dialog, payload);
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const closeDialog = () => context.closeDialog();
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const setOpen = (value: any) => (value ? context.openDialog(dialog) : context.closeDialog());
-    return { openDialog, closeDialog, setOpen };
-  }, [context, dialog]);
+  // const [modal, setModal] = useState<any>();
+  // useEffect(() => {
+  //   const $targetEl: HTMLElement | null = document.querySelector(`#${Modal}`);
 
-  const isOpen = context.isOpen && context.dialog === dialog;
+  //   // options with default values
+  //   const options = {};
+  //   setModal(new Modal($targetEl, options));
+  // }, [Modal]);
+
+  // useEffect(() => {
+  //   const $targetEl: HTMLElement | null = document.querySelector(`#${modalId}`);
+  //   context.setModalInstance(new Modal($targetEl, {}));
+  // }, [modalId]);
+
+  const { openModal, closeModal, setOpen } = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const openModal = (payload: any) => context.openModal(modalId, payload);
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const closeModal = () => context.closeModal();
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const setOpen = (value: any) => {
+      if (value) {
+        context.openModal(modalId);
+        const $targetEl: HTMLElement | null = document.querySelector(`#${modalId}`);
+        const modalInstance = new Modal($targetEl, {});
+        modalInstance.show();
+        context.saveModalInstance(modalInstance);
+      } else {
+        context.modalInstance.hide();
+        context.closeModal();
+      }
+    };
+
+    return { openModal, closeModal, setOpen };
+  }, [context, modalId]);
+
+  const isOpen = context.isOpen && context.Modal === Modal;
 
   try {
-    return { openDialog, closeDialog, setOpen, isOpen, payload: context.payload };
+    return { openModal, closeModal, setOpen, isOpen, payload: context.payload, modal: context.modalInstance };
   } catch (e) {
     return {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openDialog: () => {},
+      openModal: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      closeDialog: () => {},
+      closeModal: () => {},
     };
   }
 }

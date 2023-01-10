@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { memo, useCallback, useRef, useMemo } from 'react';
 import { Formik } from 'formik';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import { usePeripherals } from '../../hooks';
 import { PERIPHERAL_MODAL } from '../../constants';
 
-import { Peripheral } from '@/services';
 import { useModal } from '@/contexts';
 
 // type AddPeripheralModalProps = { peripheral: Peripheral | null };
@@ -13,7 +13,7 @@ import { useModal } from '@/contexts';
 const PeripheralModal = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isLoading, add } = usePeripherals.useAddPeripheral();
-  const { payload, closeDialog } = useModal(PERIPHERAL_MODAL);
+  const { payload, closeModal } = useModal(PERIPHERAL_MODAL);
 
   const initialValues = useMemo(
     () => ({
@@ -28,18 +28,18 @@ const PeripheralModal = () => {
     async (values: any, { resetForm }: any) => {
       await add({ gateway: payload?._id, ...values });
       if (!isLoading) {
-        closeDialog();
+        closeModal();
         resetForm();
       }
     },
-    [add, closeDialog, isLoading, payload?._id],
+    [add, closeModal, isLoading, payload?._id],
   );
 
   const handleCancel = useCallback(() => {
     if (!isLoading) {
-      closeDialog();
+      closeModal();
     }
-  }, [closeDialog, isLoading]);
+  }, [closeModal, isLoading]);
 
   return (
     <>
@@ -61,26 +61,14 @@ const PeripheralModal = () => {
                 className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-600 hover:text-white"
                 data-modal-hide={PERIPHERAL_MODAL}
               >
-                <svg
-                  aria-hidden="true"
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <XMarkIcon className="h-5 w-5" />
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
             <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit}>
               {({ values, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="space-y-6 p-6">
+                  <div className="mt-5 space-y-6 p-6 ">
                     <div className="grid md:grid-cols-2 md:gap-6 ">
                       <div className="group relative z-0 mb-6 w-full">
                         <input
@@ -136,7 +124,7 @@ const PeripheralModal = () => {
                       </label>
                     </div>
                   </div>
-                  <div className="flex items-center justify-end space-x-2 rounded-b border-t  border-gray-600 p-6">
+                  <div className="flex items-center justify-end space-x-2 p-6">
                     <button
                       type="submit"
                       className="btn"
@@ -145,7 +133,7 @@ const PeripheralModal = () => {
                     >
                       Save
                     </button>
-                    <button type="button" className="btn" data-modal-hide={PERIPHERAL_MODAL} onClick={handleCancel}>
+                    <button type="button" data-modal-hide={PERIPHERAL_MODAL} onClick={handleCancel}>
                       Cancel
                     </button>
                   </div>
