@@ -30,10 +30,10 @@ const Table = ({
   tableHeaderProps,
   scrollReveal = false,
 }: TableProps) => (
-  <div className={classnames('overflow-x-auto shadow-md', containerClass)}>
+  <div className={classnames('overflow-x-auto shadow-md', containerClass)} data-testid="table">
     <table className={classnames('table w-full', tableClass)}>
       <thead>
-        <tr>
+        <tr {...tableHeaderProps}>
           {columns.map((col) => (
             <th key={uuidv4()} {...col.headerCellProps}>
               {col.headerName}

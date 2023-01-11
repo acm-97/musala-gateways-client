@@ -41,11 +41,11 @@ const GatewayDetails = () => {
         Serial Number : <span className="font-bold text-white">{data?._id}</span>
       </p>
 
-      <Button className="mb-6 mr-3" onClick={handleGatewayModal}>
+      <Button className="mb-6 mr-3" onClick={handleGatewayModal} dataTestid="edit-gateway-button">
         <PencilSquareIcon width={16} className="mr-2" /> Gateway
       </Button>
 
-      <Button className="mb-6" onClick={handlePeripheralsModal}>
+      <Button className="mb-6" onClick={handlePeripheralsModal} dataTestid="add-peripheral-button">
         <PlusIcon width={16} className="mr-2" /> Peripheral
       </Button>
 

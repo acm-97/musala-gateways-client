@@ -16,7 +16,7 @@ const GatewaysTable = () => {
   return (
     <>
       <h2 className="mb-8">Gateway Management System</h2>
-      <Button onClick={openModal} className="mb-5">
+      <Button onClick={openModal} className="mb-5" dataTestid="add-gateway-button">
         <PlusIcon width={20} className="mr-2" /> Gateway
       </Button>
       <Table rows={rows} columns={columns} />

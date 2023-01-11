@@ -7,9 +7,10 @@ type ButtonProps = {
   children: ReactNode;
   type?: 'button' | 'submit' | 'reset' | undefined;
   disabled?: boolean;
+  dataTestid?: string;
 };
 
-const Button = ({ onClick, className, children = '', type = 'button', disabled = false }: ButtonProps) => (
+const Button = ({ onClick, className, children = '', type = 'button', disabled = false, dataTestid }: ButtonProps) => (
   <button
     // eslint-disable-next-line react/button-has-type
     type={type}
@@ -19,6 +20,7 @@ const Button = ({ onClick, className, children = '', type = 'button', disabled =
       className,
     )}
     onClick={onClick}
+    data-testid={dataTestid}
   >
     {children}
   </button>
