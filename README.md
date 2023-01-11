@@ -1,4 +1,4 @@
-# REST service (JSON/HTTP)
+# Gateways Management Client
 
 You can see the [client repo here](https://github.com/acm-97/musala-gateways-core)
 
