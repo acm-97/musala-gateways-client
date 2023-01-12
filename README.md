@@ -1,6 +1,6 @@
 # Gateways Management Client
 
-You can see the [client repo here](https://github.com/acm-97/musala-gateways-core)
+You can see the [core repo here](https://github.com/acm-97/musala-gateways-core)
 
 ## Description of the task
 
